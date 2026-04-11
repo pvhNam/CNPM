@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
@@ -8,20 +7,13 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Build & Test') {
-            steps {
-                echo '🛠️ Dang cai dat thu vien Node.js...'
-                sh 'npm install'
-            }
-        }
-
+        // Bo qua stage Build & Test vi Docker se lam thay
         stage('Dockerize & Deploy') {
             steps {
                 echo '🐳 Buoc 1: Dong goi Docker Image...'
                 sh 'docker build -t doan-cnpm .'
 
-                echo '🛑 Buoc 2: Don dẹp Container cu...'
+                echo '🛑 Buoc 2: Don dep Container cu...'
                 sh 'docker rm -f web-app-demo || true'
 
                 echo '🚀 Buoc 3: Khoi chay ung dung...'
@@ -29,7 +21,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo '✅ Da Deploy thanh cong!'
