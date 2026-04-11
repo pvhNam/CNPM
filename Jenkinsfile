@@ -11,19 +11,20 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                echo '🛠️ Đang cài đặt thư viện và kiểm tra code...'
-                // Mở khóa lệnh npm install để Jenkins thực sự kiểm tra code
-                sh 'npm install'
+                echo '🛠️ Đang cài đặt thư viện...'
+                // Thay 'sh' bằng 'bat' vì bạn đang chạy trên Windows
+                bat 'npm install'
             }
         }
 
         stage('Deploy to Render') {
             steps {
                 echo '🚀 Đang gọi Render để cập nhật bản build mới...'
-                /* Thay URL dưới đây bằng Deploy Hook từ Render Dashboard 
-                   Settings -> Deploy Hook 
+                /* Dùng 'bat' và bao quanh URL bằng dấu nháy kép. 
+                   Lưu ý: Bạn phải cài đặt phần mềm 'curl' trên Windows 
+                   (Windows 10/11 thường đã có sẵn).
                 */
-                sh "curl -X GET 'https://api.render.com/deploy/srv-xxxx?key=yyyy'" 
+                bat "curl -X GET 'https://api.render.com/deploy/srv-xxxx?key=yyyy'"
             }
         }
     }
