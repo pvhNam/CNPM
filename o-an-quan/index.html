@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ô Ăn Quan - Trò Chơi Dân Gian Việt Nam</title>
+    <meta name="description" content="Chơi Ô Ăn Quan online - trò chơi dân gian truyền thống Việt Nam. Chơi với bạn bè hoặc máy tính.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background decoration -->
+    <div class="bg-pattern"></div>
+
+    <!-- ===== Auth Screen (Login/Register) ===== -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo-icon">&#9823;</div>
+                <h1 class="game-title">Ô Ăn Quan</h1>
+                <p class="game-subtitle">Trò Chơi Dân Gian Việt Nam</p>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button id="tab-login" class="auth-tab active" onclick="showLoginForm()">Đăng Nhập</button>
+                    <button id="tab-register" class="auth-tab" onclick="showRegisterForm()">Đăng Ký</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form-container" class="auth-form-container active">
+                    <form id="login-form" autocomplete="off">
+                        <div class="form-group">
+                            <label for="login-username">
+                                <span class="form-icon">👤</span> Tên đăng nhập
+                            </label>
+                            <input type="text" id="login-username" placeholder="Nhập tên đăng nhập" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">
+                                <span class="form-icon">🔒</span> Mật khẩu
+                            </label>
+                            <input type="password" id="login-password" placeholder="Nhập mật khẩu" required>
+                        </div>
+                        <div class="form-error" id="login-error"></div>
+                        <button type="submit" id="login-btn" class="auth-submit-btn">Đăng Nhập</button>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form-container" class="auth-form-container">
+                    <form id="register-form" autocomplete="off">
+                        <div class="form-group">
+                            <label for="reg-display-name">
+                                <span class="form-icon">✨</span> Tên hiển thị
+                            </label>
+                            <input type="text" id="reg-display-name" placeholder="Tên hiển thị trong game">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-username">
+                                <span class="form-icon">👤</span> Tên đăng nhập
+                            </label>
+                            <input type="text" id="reg-username" placeholder="Ít nhất 3 ký tự" required minlength="3" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">
+                                <span class="form-icon">🔒</span> Mật khẩu
+                            </label>
+                            <input type="password" id="reg-password" placeholder="Ít nhất 4 ký tự" required minlength="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-confirm-password">
+                                <span class="form-icon">🔒</span> Xác nhận mật khẩu
+                            </label>
+                            <input type="password" id="reg-confirm-password" placeholder="Nhập lại mật khẩu" required>
+                        </div>
+                        <div class="form-error" id="reg-error"></div>
+                        <button type="submit" id="reg-btn" class="auth-submit-btn">Đăng Ký</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Menu Screen ===== -->
+    <div id="menu-screen" class="screen">
+        <div class="menu-container">
+            <div class="logo-section">
+                <div class="logo-icon">&#9823;</div>
+                <h1 class="game-title">Ô Ăn Quan</h1>
+                <p class="game-subtitle">Trò Chơi Dân Gian Việt Nam</p>
+            </div>
+
+            <!-- User Info Bar -->
+            <div class="user-bar">
+                <div class="user-bar-info">
+                    <span class="user-bar-avatar">👤</span>
+                    <div class="user-bar-details">
+                        <span class="user-bar-name" id="user-display-name">Player</span>
+                        <span class="user-bar-stats" id="user-stats">0W / 0L / 0D</span>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()" title="Đăng xuất">🚪</button>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="btn-online" class="menu-btn online-btn" onclick="findMatch()">
+                    <span class="btn-icon">🌐</span>
+                    <span class="btn-text">Chơi Online</span>
+                    <span class="btn-badge">MỚI</span>
+                </button>
+                <button id="btn-pvp" class="menu-btn" onclick="startGame('pvp')">
+                    <span class="btn-icon">👥</span>
+                    <span class="btn-text">2 Người Chơi (Cùng máy)</span>
+                </button>
+                <button id="btn-ai" class="menu-btn" onclick="startGame('ai')">
+                    <span class="btn-icon">🤖</span>
+                    <span class="btn-text">Chơi Với Máy</span>
+                </button>
+                <button id="btn-rules" class="menu-btn secondary" onclick="showRules()">
+                    <span class="btn-icon">📜</span>
+                    <span class="btn-text">Luật Chơi</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Lobby Screen (Matchmaking) ===== -->
+    <div id="lobby-screen" class="screen">
+        <div class="lobby-container">
+            <div class="lobby-header">
+                <h2>🌐 Tìm Trận Online</h2>
+            </div>
+            <div class="lobby-body">
+                <div class="lobby-spinner" id="lobby-spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring inner"></div>
+                </div>
+                <p class="lobby-status" id="lobby-status">Đang tìm đối thủ...</p>
+                <p class="lobby-tip">Mẹo: Mở thêm 1 tab khác để test ghép trận!</p>
+            </div>
+            <button class="menu-btn secondary" onclick="cancelMatchmaking()">
+                <span class="btn-icon">✕</span>
+                <span class="btn-text">Hủy Tìm Trận</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== Game Screen ===== -->
+    <div id="game-screen" class="screen">
+        <header class="game-header">
+            <button id="btn-back" class="icon-btn" onclick="backToMenu()" title="Quay lại">&#8592;</button>
+            <h2 class="header-title">Ô Ăn Quan</h2>
+            <button id="btn-restart" class="icon-btn" onclick="restartGame()" title="Chơi lại">&#8635;</button>
+        </header>
+
+        <!-- Player 2 Info -->
+        <div class="player-info player2-info" id="player2-info">
+            <div class="player-avatar">&#9819;</div>
+            <div class="player-details">
+                <span class="player-name" id="player2-name">Người Chơi 2</span>
+                <span class="player-score">Điểm: <strong id="player2-score">0</strong></span>
+            </div>
+            <div class="turn-indicator" id="turn2"></div>
+        </div>
+
+        <!-- Game Board -->
+        <div class="board-wrapper">
+            <div class="board" id="game-board">
+                <!-- Quan Left (position 0) -->
+                <div class="cell quan quan-left" id="cell-0" data-pos="0">
+                    <div class="cell-stones" id="stones-0"></div>
+                    <div class="cell-count" id="count-0">1</div>
+                </div>
+
+                <!-- Player 2 row (top: 11, 10, 9, 8, 7) -->
+                <div class="cell citizen p2" id="cell-11" data-pos="11" onclick="onCellClick(11)">
+                    <div class="cell-stones" id="stones-11"></div>
+                    <div class="cell-count" id="count-11">5</div>
+                </div>
+                <div class="cell citizen p2" id="cell-10" data-pos="10" onclick="onCellClick(10)">
+                    <div class="cell-stones" id="stones-10"></div>
+                    <div class="cell-count" id="count-10">5</div>
+                </div>
+                <div class="cell citizen p2" id="cell-9" data-pos="9" onclick="onCellClick(9)">
+                    <div class="cell-stones" id="stones-9"></div>
+                    <div class="cell-count" id="count-9">5</div>
+                </div>
+                <div class="cell citizen p2" id="cell-8" data-pos="8" onclick="onCellClick(8)">
+                    <div class="cell-stones" id="stones-8"></div>
+                    <div class="cell-count" id="count-8">5</div>
+                </div>
+                <div class="cell citizen p2" id="cell-7" data-pos="7" onclick="onCellClick(7)">
+                    <div class="cell-stones" id="stones-7"></div>
+                    <div class="cell-count" id="count-7">5</div>
+                </div>
+
+                <!-- Quan Right (position 6) -->
+                <div class="cell quan quan-right" id="cell-6" data-pos="6">
+                    <div class="cell-stones" id="stones-6"></div>
+                    <div class="cell-count" id="count-6">1</div>
+                </div>
+
+                <!-- Player 1 row (bottom: 1, 2, 3, 4, 5) -->
+                <div class="cell citizen p1" id="cell-1" data-pos="1" onclick="onCellClick(1)">
+                    <div class="cell-stones" id="stones-1"></div>
+                    <div class="cell-count" id="count-1">5</div>
+                </div>
+                <div class="cell citizen p1" id="cell-2" data-pos="2" onclick="onCellClick(2)">
+                    <div class="cell-stones" id="stones-2"></div>
+                    <div class="cell-count" id="count-2">5</div>
+                </div>
+                <div class="cell citizen p1" id="cell-3" data-pos="3" onclick="onCellClick(3)">
+                    <div class="cell-stones" id="stones-3"></div>
+                    <div class="cell-count" id="count-3">5</div>
+                </div>
+                <div class="cell citizen p1" id="cell-4" data-pos="4" onclick="onCellClick(4)">
+                    <div class="cell-stones" id="stones-4"></div>
+                    <div class="cell-count" id="count-4">5</div>
+                </div>
+                <div class="cell citizen p1" id="cell-5" data-pos="5" onclick="onCellClick(5)">
+                    <div class="cell-stones" id="stones-5"></div>
+                    <div class="cell-count" id="count-5">5</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 1 Info -->
+        <div class="player-info player1-info" id="player1-info">
+            <div class="player-avatar">&#9813;</div>
+            <div class="player-details">
+                <span class="player-name" id="player1-name">Người Chơi 1</span>
+                <span class="player-score">Điểm: <strong id="player1-score">0</strong></span>
+            </div>
+            <div class="turn-indicator active" id="turn1"></div>
+        </div>
+
+        <!-- Direction Selector -->
+        <div class="direction-overlay" id="direction-overlay">
+            <div class="direction-modal">
+                <p>Chọn hướng rải</p>
+                <div class="direction-buttons">
+                    <button class="dir-btn" id="dir-left" onclick="chooseDirection(-1)">
+                        <span>&#8592;</span> Trái
+                    </button>
+                    <button class="dir-btn" id="dir-right" onclick="chooseDirection(1)">
+                        Phải <span>&#8594;</span>
+                    </button>
+                </div>
+                <button class="cancel-btn" onclick="cancelDirection()">Hủy</button>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div class="status-bar" id="status-bar">Lượt của Người Chơi 1</div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rules-modal">
+        <div class="modal-content rules-content">
+            <button class="modal-close" onclick="closeRules()">&times;</button>
+            <h2>📜 Luật Chơi Ô Ăn Quan</h2>
+            <div class="rules-body">
+                <h3>🎯 Mục tiêu</h3>
+                <p>Thu được nhiều quân (đá) nhất khi trò chơi kết thúc.</p>
+                
+                <h3>🎲 Bàn chơi</h3>
+                <p>Bàn cờ gồm 12 ô: 2 ô <strong>Quan</strong> (bán nguyệt) ở hai đầu và 10 ô <strong>Dân</strong> (vuông), mỗi bên 5 ô. Ban đầu mỗi ô dân có 5 quân nhỏ, mỗi ô quan có 1 quân lớn.</p>
+                
+                <h3>🔄 Cách chơi</h3>
+                <ol>
+                    <li>Chọn một ô dân <strong>bên mình</strong> có quân.</li>
+                    <li>Bốc hết quân trong ô, chọn hướng rải (trái/phải).</li>
+                    <li>Rải mỗi ô 1 quân theo hướng đã chọn.</li>
+                    <li>Sau khi rải xong:
+                        <ul>
+                            <li>Ô kế tiếp <strong>có quân</strong> (ô dân) → bốc hết và tiếp tục rải.</li>
+                            <li>Ô kế tiếp là <strong>ô Quan có quân</strong> → <strong>hết lượt</strong> (Quan già không được động!).</li>
+                            <li>Ô kế tiếp <strong>trống</strong> + ô sau đó <strong>có quân</strong> → ăn quân ô đó! Tiếp tục kiểm tra.</li>
+                            <li>Ô kế tiếp <strong>trống</strong> + ô sau đó cũng <strong>trống</strong> → hết lượt.</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>⭐ Luật đặc biệt</h3>
+                <ul>
+                    <li><strong>Quan già không được động:</strong> Không được bốc quân từ ô Quan để rải tiếp. Nếu quân cuối rơi ngay trước ô Quan có quân → hết lượt.</li>
+                    <li><strong>Ăn Quan:</strong> Nếu ăn được quân trong ô Quan → được cộng thêm <strong>10 điểm</strong> thưởng! 🎉</li>
+                </ul>
+                
+                <h3>🏁 Kết thúc</h3>
+                <p>Trò chơi kết thúc khi cả 2 ô Quan đều trống. Quân còn lại trên mỗi bên thuộc về người chơi bên đó. Ai nhiều điểm hơn thắng!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal-overlay" id="gameover-modal">
+        <div class="modal-content gameover-content">
+            <div class="gameover-icon" id="gameover-icon">🏆</div>
+            <h2 id="gameover-title">Kết Thúc!</h2>
+            <p id="gameover-message"></p>
+            <div class="gameover-scores">
+                <div class="go-score">
+                    <span>Người Chơi 1</span>
+                    <strong id="go-score1">0</strong>
+                </div>
+                <div class="go-vs">VS</div>
+                <div class="go-score">
+                    <span>Người Chơi 2</span>
+                    <strong id="go-score2">0</strong>
+                </div>
+            </div>
+            <div class="gameover-buttons">
+                <button class="menu-btn" onclick="restartGame()">🔄 Chơi Lại</button>
+                <button class="menu-btn secondary" onclick="backToMenu()">🏠 Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="game.js"></script>
+    <script src="online.js"></script>
+</body>
+</html>
