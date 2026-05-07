@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./ 
 RUN npm install 
 
-# Sửa lại dòng này: đảm bảo có khoảng trắng giữa dấu chấm thứ nhất và dấu chấm thứ hai
+# Đã sửa: Gom lại thành một dòng với khoảng trắng ở giữa
 COPY . . 
 
 EXPOSE 3000 
