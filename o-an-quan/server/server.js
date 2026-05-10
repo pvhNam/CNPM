@@ -1,8 +1,6 @@
 /* ===================================
    Main Server - Express + Socket.IO
    =================================== */
-require('dotenv').config(); 
-
 // Load biến môi trường từ .env khi chạy local.
 // Trên Render, env đã được inject sẵn nên dotenv không ảnh hưởng.
 require('dotenv').config();
