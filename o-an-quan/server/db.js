@@ -1,22 +1,45 @@
+/* ===================================
+   Database Pool - TiDB / MySQL
+   Tất cả thông tin kết nối đọc từ biến môi trường.
+   Local dev: đặt trong file .env (xem .env.example)
+   Render:    đặt trong Environment Variables trên Dashboard
+   =================================== */
+
 const mysql = require('mysql2/promise');
 
+const {
+    MYSQLHOST,
+    MYSQLPORT,
+    MYSQLUSER,
+    MYSQLPASSWORD,
+    MYSQLDATABASE,
+    MYSQL_SSL
+} = process.env;
+
+// Bắt buộc phải có đủ env, tránh tình huống vô tình chạy với fallback lộ creds
+const missing = ['MYSQLHOST', 'MYSQLUSER', 'MYSQLPASSWORD', 'MYSQLDATABASE']
+    .filter((k) => !process.env[k]);
+
+if (missing.length > 0) {
+    console.error(`❌ Thiếu biến môi trường: ${missing.join(', ')}`);
+    console.error('   Hãy tạo file .env (xem .env.example) hoặc set env trên Render.');
+    process.exit(1);
+}
+
+// TiDB Cloud bắt buộc SSL. Cho phép tắt qua MYSQL_SSL=false nếu dùng MySQL local.
+const useSsl = (MYSQL_SSL || 'true').toLowerCase() !== 'false';
+
 const pool = mysql.createPool({
-    host: process.env.MYSQLHOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
-    port: parseInt(process.env.MYSQLPORT) || 4000,
-    user: process.env.MYSQLUSER || '2e6TRD3nBAkVtKV.root', // Nhớ thay bằng biến môi trường sau nhé
-    password: process.env.MYSQLPASSWORD || 'OCCT9T7eXutoukG9',
-    database: process.env.MYSQLDATABASE || 'o_an_quan_db',
+    host: MYSQLHOST,
+    port: parseInt(MYSQLPORT || '4000', 10),
+    user: MYSQLUSER,
+    password: MYSQLPASSWORD,
+    database: MYSQLDATABASE,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
     charset: 'utf8mb4',
-    
-    // 👇 THÊM ĐOẠN NÀY VÀO 👇
-    ssl: {
-        minVersion: 'TLSv1.2',
-        rejectUnauthorized: true
-    }
-    // 👆 👆 👆 👆 👆 👆 👆 👆
+    ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined
 });
 
 module.exports = pool;

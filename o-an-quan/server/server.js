@@ -3,6 +3,10 @@
    =================================== */
 require('dotenv').config(); 
 
+// Load biến môi trường từ .env khi chạy local.
+// Trên Render, env đã được inject sẵn nên dotenv không ảnh hưởng.
+require('dotenv').config();
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -13,26 +17,39 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const GameManager = require('./game-manager');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: { origin: '*', methods: ['GET', 'POST'] }
+    cors: { origin: true, credentials: true, methods: ['GET', 'POST'] }
 });
 
 const gameManager = new GameManager();
 
+// Render (và các PaaS khác) đứng sau reverse proxy -> cần trust proxy
+// để cookie `secure: true` hoạt động và req.protocol trả về 'https'.
+app.set('trust proxy', 1);
+
 // ===== Middleware =====
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+if (!process.env.SESSION_SECRET) {
+    console.error('❌ Thiếu biến môi trường: SESSION_SECRET');
+    process.exit(1);
+}
+
 const sessionMiddleware = session({
-    secret: 'o-an-quan-secret-key-2024',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // set true in production with HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        secure: isProduction,              // HTTPS bắt buộc trên Render
+        httpOnly: true,
+        sameSite: isProduction ? 'lax' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000        // 24 hours
     }
 });
 
