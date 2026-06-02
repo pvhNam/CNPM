@@ -617,3 +617,50 @@ function showToast(text) {
 /* ── Utils ── */
 function el(id)  { return document.getElementById(id); }
 function sc(id)  { return document.getElementById(id); }
+/* ============================================================
+   NAM-23130200 UI ENHANCEMENT PATCH
+   Thêm class trạng thái body + ripple + rung nhẹ trên mobile.
+   Không sửa luật chơi, không sửa API.
+   ============================================================ */
+(function () {
+  const oldRender = render;
+  render = function () {
+    oldRender();
+    namDecorateState();
+  };
+
+  const oldSelectCell = selectCell;
+  selectCell = function (index) {
+    oldSelectCell(index);
+    if (navigator.vibrate && selectedCell === index) navigator.vibrate(18);
+  };
+
+  document.addEventListener('pointerdown', function (event) {
+    const target = event.target.closest('.btn, .move-btn, .reload-btn, .cell.can-select');
+    if (!target || target.disabled) return;
+    namRipple(target, event.clientX, event.clientY);
+  }, { passive: true });
+
+  function namDecorateState() {
+    if (!state) return;
+    const side = effectiveSide();
+    document.body.classList.toggle('is-my-turn', state.phase === 'PLAYING' && (!side || side === state.currentTurn) && !(state.aiGame && state.currentTurn === 'B'));
+    document.body.classList.toggle('is-waiting', state.phase === 'WAITING' || (side && side !== state.currentTurn));
+    document.body.classList.toggle('is-ended', state.phase === 'ENDED');
+    document.body.dataset.turn = state.currentTurn || '';
+  }
+
+  function namRipple(target, x, y) {
+    const oldPosition = getComputedStyle(target).position;
+    if (oldPosition === 'static') target.style.position = 'relative';
+    target.style.overflow = 'hidden';
+
+    const rect = target.getBoundingClientRect();
+    const dot = document.createElement('span');
+    dot.className = 'ripple-dot';
+    dot.style.left = `${x - rect.left}px`;
+    dot.style.top = `${y - rect.top}px`;
+    target.appendChild(dot);
+    setTimeout(() => dot.remove(), 650);
+  }
+})();
