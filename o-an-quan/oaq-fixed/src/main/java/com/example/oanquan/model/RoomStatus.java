@@ -1,5 +1,5 @@
 package com.example.oanquan.model;
 
 public enum RoomStatus {
-    WAITING, PLAYING
+    WAITING, PLAYING, CLOSED
 }
