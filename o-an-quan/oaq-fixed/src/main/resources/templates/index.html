@@ -15,15 +15,41 @@
         <div class="hero-copy">
             <h1>Ô Ăn <span>Quan</span></h1>
 
-            <div class="hero-stats" aria-label="Tính năng chính">
-                <div><b>2</b><span>người chơi</span></div>
-                <div><b>AI</b><span>đối thủ máy</span></div>
-                <div><b>WS</b><span>online realtime</span></div>
+
+
+            <div class="ai-panel" aria-label="Chọn cấu hình AI">
+                <div class="ai-panel-title">🤖 Chọn cấp độ chơi với AI</div>
+                <div class="ai-levels">
+                    <label class="ai-option">
+                        <input type="radio" name="aiDifficulty" value="EASY">
+                        <span><b>Dễ</b><small>Tập chơi uy tín thắng được</small></span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="radio" name="aiDifficulty" value="MEDIUM" checked>
+                        <span><b>Trung bình</b><small>Trung bình mà không dễ ăn đâu</small></span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="radio" name="aiDifficulty" value="HARD">
+                        <span><b>Khó</b><small>Đố bạn thắng dc luôn </small></span>
+                    </label>
+                </div>
+
+                <div class="ai-panel-title ai-turn-title">🎲 Ai đi trước?</div>
+                <div class="ai-turn-options">
+                    <label class="ai-option ai-turn-option">
+                        <input type="radio" name="aiFirstTurn" value="A" checked>
+                        <span><b>🙋 Mình đi trước</b><small>Bạn là Người được chọn nước đầu tiên</small></span>
+                    </label>
+                    <label class="ai-option ai-turn-option">
+                        <input type="radio" name="aiFirstTurn" value="B">
+                        <span><b>🤖 AI đi trước</b><small>Máy AI sẽ đi nước đầu tiên </small></span>
+                    </label>
+                </div>
             </div>
 
             <div class="actions">
-                <button id="quickStartBtn" class="btn primary btn-xl">🎮 Tạo ván local</button>
-                <button id="aiStartBtn" class="btn primary btn-xl">🤖 Chơi với AI</button>
+                <button id="quickStartBtn" class="btn primary btn-xl">🎮 Tạo ván chơi trên cùng 1 máy</button>
+                <button id="aiStartBtn" class="btn primary btn-xl">🤖 Chơi với AI </button>
                 <a class="btn ghost btn-xl" href="/lobby">🌐 Online / Tìm trận</a>
             </div>
         </div>
@@ -34,7 +60,7 @@
     <section class="card how-card">
         <h2>Cách chơi nhanh</h2>
         <div class="steps">
-            <div><b>1</b><span>Chọn chế độ local, AI hoặc online.</span></div>
+            <div><b>1</b><span>Chọn chế độ chơi cùng 1 máy, AI hoặc online.</span></div>
             <div><b>2</b><span>Chọn ô dân sáng màu ở hàng của bạn.</span></div>
             <div><b>3</b><span>Bấm rải trái hoặc rải phải để thực hiện nước đi.</span></div>
         </div>
@@ -53,7 +79,10 @@
     });
 
     document.getElementById('aiStartBtn').addEventListener('click', async () => {
-        const res = await fetch('/api/games/ai', { method: 'POST' });
+        const difficulty = document.querySelector('input[name="aiDifficulty"]:checked')?.value || 'MEDIUM';
+        const firstTurn = document.querySelector('input[name="aiFirstTurn"]:checked')?.value || 'A';
+        const query = new URLSearchParams({ difficulty, firstTurn });
+        const res = await fetch('/api/games/ai?' + query.toString(), { method: 'POST' });
         const data = await res.json();
         if (data.gameId) {
             localStorage.setItem(`gameSide_${data.gameId}`, 'A');
