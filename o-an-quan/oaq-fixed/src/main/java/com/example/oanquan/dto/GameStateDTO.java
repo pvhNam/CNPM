@@ -1,6 +1,6 @@
 package com.example.oanquan.dto;
 
-import com.example.oanquan.engine.AnimationStep;
+import com.example.oanquan.AnimationStep;
 import com.example.oanquan.model.CurrentTurn;
 import com.example.oanquan.model.Direction;
 import com.example.oanquan.model.GamePhase;

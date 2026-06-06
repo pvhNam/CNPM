@@ -1,5 +1,7 @@
 package com.example.oanquan.engine;
 
+import com.example.oanquan.BoardState;
+import com.example.oanquan.Cell;
 import com.example.oanquan.model.CurrentTurn;
 import org.junit.jupiter.api.Test;
 

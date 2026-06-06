@@ -1,7 +1,7 @@
 package com.example.oanquan.service;
 
 import com.example.oanquan.dto.RoomDTO;
-import com.example.oanquan.engine.OAnQuanEngine;
+import com.example.oanquan.OAnQuanEngine;
 import com.example.oanquan.entity.Game;
 import com.example.oanquan.entity.Room;
 import com.example.oanquan.entity.User;
