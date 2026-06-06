@@ -1,5 +1,6 @@
 package com.example.oanquan.engine;
 
+import com.example.oanquan.*;
 import com.example.oanquan.model.CurrentTurn;
 import com.example.oanquan.model.Direction;
 import org.junit.jupiter.api.Test;
